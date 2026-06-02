@@ -22,6 +22,14 @@ Core promise:
 
 The app should prove the rehearsal loop before adding broad management features.
 
+## Roadmap approval rule
+
+Only the current phase and next checkpoint are approved for issue creation.
+
+Later phases are candidate roadmap until reviewed again.
+
+Do not create all issues in this document at once. Use this document to sequence work, not to generate a giant backlog.
+
 ## Product anti-goals
 
 Do not create issues for these unless Tim explicitly changes product direction:
@@ -47,20 +55,43 @@ The first meaningful milestone is not a perfect song library or a perfect schema
 ```text
 Create rehearsal
 -> build plan
--> generate Slack rehearsal plan copy
 -> run rehearsal on iPhone
 -> capture notes
 -> review what happened
 -> update song history
--> generate Slack recap copy
+-> generate simple Slack plan/recap copy
 -> carry context into the next plan
 ```
 
 If that loop is annoying, fix it before building more.
 
+## Touch type semantics
+
+The app must distinguish how a song was touched in rehearsal.
+
+Initial touch-type behavior:
+
+- `full_work`: substantive rehearsal work; updates `songs.last_rehearsed_at`.
+- `sectional`: substantive rehearsal work in sectionals; updates `songs.last_rehearsed_at`.
+- `rep_review`: brief maintenance review/run-through; updates `songs.last_rep_reviewed_at`.
+- `homework`: assigned or discussed but not rehearsed; does not automatically update either date.
+- `skipped`: planned but not done; does not update either date.
+
+A sectional is real work, just not full-ensemble work. It should not update `last_rep_reviewed_at`.
+
+These defaults can be overridden manually in Review Mode if needed, but Codex should not invent different behavior.
+
+## First product checkpoint
+
+After the app can create a rehearsal, add blocks, run Execution Mode, capture notes, and show a Review summary, stop and test the workflow before building more planning polish.
+
+The test is not whether the app is complete. The test is whether the core rehearsal loop feels worth continuing.
+
+This checkpoint should happen before creating Phase 4 issues.
+
 ## Phase 0 — Project foundation
 
-Purpose: create a stable Next.js/Supabase project foundation with docs, checks, and basic auth direction.
+Purpose: create a stable Next.js/Supabase project foundation with docs, checks, and username/password auth direction.
 
 ### Issue 1 — Scaffold the Next.js app
 
@@ -123,9 +154,9 @@ Acceptance criteria:
 - Seed data includes a handful of warmups with purposes and durations.
 - Seed data is safe for local/dev use and documented.
 
-## Phase 1 — Core libraries
+## Phase 1 — Minimum rehearsal notebook
 
-Purpose: create the basic song, work area, tag, and warmup foundations needed for planning.
+Purpose: create the minimum song, warmup, work-area, and rehearsal-block foundation needed to run a crude rehearsal cycle.
 
 ### Issue 5 — Build song library list and song detail view
 
@@ -143,11 +174,11 @@ Acceptance criteria:
 - User can see last rehearsed and last rep reviewed dates.
 - Retired/shelved songs are preserved, not deleted by default.
 
-### Issue 6 — Build song work areas
+### Issue 6 — Build song work areas with basic tags
 
 Summary:
 
-Allow each song to have lightweight open/closed work areas.
+Allow each song to have lightweight open/closed work areas with flexible tags.
 
 Acceptance criteria:
 
@@ -155,29 +186,15 @@ Acceptance criteria:
 - User can edit work area title and notes.
 - User can mark a work area open/closed.
 - User can pin a work area for next rehearsal.
+- User can add existing or new tags to a work area.
+- Tags are stored as user-managed data, not hard-coded enums.
 - Work areas stay lightweight; no complex workflow state machine.
 
-### Issue 7 — Build flexible tag management
+### Issue 7 — Build warmup library with basic tags
 
 Summary:
 
-Create a simple user-managed tag system for work areas, warmups, and general use.
-
-Acceptance criteria:
-
-- `/tags` shows active tags.
-- User can add a tag.
-- User can rename a tag.
-- User can hide/deactivate a tag.
-- Tags are not hard-coded enums.
-- Merge/delete can be deferred.
-- Work areas can be tagged.
-
-### Issue 8 — Build warmup library
-
-Summary:
-
-Create a warmup library with purpose, duration, instructions, notes, and tags.
+Create a warmup library with purpose, duration, instructions, notes, and flexible tags.
 
 Acceptance criteria:
 
@@ -187,40 +204,92 @@ Acceptance criteria:
 - Warmups can be filtered or searched by tag/purpose.
 - Warmups remain lightweight; no audio/video/media storage.
 
-## Phase 2 — Planning Mode
-
-Purpose: build a realistic rehearsal plan with time budget and singer-facing Slack output.
-
-### Issue 9 — Create rehearsals and planning workspace
+### Issue 8 — Create rehearsals and ordered rehearsal blocks
 
 Summary:
 
-Allow the director to create a rehearsal and enter date, available minutes, goal, and planning scratchpad.
+Allow the director to create a rehearsal and build a basic ordered plan with blocks.
 
 Acceptance criteria:
 
-- User can create a rehearsal.
-- Rehearsal has date, planned minutes, goal, and planning scratchpad.
-- `/planning` surfaces the next relevant rehearsal.
-- `/rehearsals/[id]/plan` opens the plan builder.
-- Planning view shows repertoire context needed for planning.
-
-### Issue 10 — Add ordered rehearsal blocks
-
-Summary:
-
-Allow rehearsal plans to contain ordered blocks for warmups, song work, rep review, sectionals, and admin.
-
-Acceptance criteria:
-
-- User can add a block to a rehearsal.
+- User can create a rehearsal with date, planned minutes, goal, and planning scratchpad.
+- User can add ordered blocks.
 - User can choose block type.
 - User can link a song and/or warmup when relevant.
 - User can enter title, goal, planned minutes, priority, director notes, singer homework, and section label.
 - User can reorder blocks.
 - Blocks display clearly on desktop and mobile.
 
-### Issue 11 — Add time budget warning
+## Phase 2 — Crude core loop
+
+Purpose: get to Execution Mode and Review Mode earlier, before over-polishing planning.
+
+### Issue 9 — Build crude mobile-first Execution Mode
+
+Summary:
+
+Create `/rehearsals/[id]/run`, focused on the current rehearsal block and minimal actions.
+
+Acceptance criteria:
+
+- Current block is visible without scrolling on iPhone-sized viewport.
+- Current block shows title, song/warmup, planned time, goal, director notes, relevant work areas, and next block preview.
+- Done/Partial/Skip are one-tap actions.
+- Add note is two taps or fewer.
+- Moving to next block is one tap.
+- UI is fast and uncluttered.
+- Before Phase 4 issues are created, this mode must be tested during a real or simulated rehearsal on an iPhone.
+
+### Issue 10 — Add optimistic execution status updates and fast note capture
+
+Summary:
+
+Make Done/Partial/Skip update immediately and allow quick note capture during Execution Mode.
+
+Acceptance criteria:
+
+- Done/Partial/Skip update visually immediately.
+- Failed sync is surfaced clearly and recoverably.
+- No spinner blocks live rehearsal flow after initial load.
+- Execution status persists after refresh.
+- User can add a note from the current block quickly.
+- Note is linked to rehearsal, block, and song when available.
+- Notes default to director-only.
+- Notes save without disrupting the execution flow.
+- Browser-native speech-to-text can be used if available through the normal input experience; no custom voice recording feature.
+
+### Issue 11 — Add basic Review Mode summary
+
+Summary:
+
+Create `/rehearsals/[id]/review` showing the original plan, execution statuses, and captured notes.
+
+Acceptance criteria:
+
+- Review view shows all blocks in order.
+- Review view shows done/partial/skipped/planned status.
+- Review view shows notes captured during rehearsal.
+- Review view supports edits to execution statuses.
+- Review view is usable later, not only immediately after rehearsal.
+
+### Issue 12 — Add block summary/jump view
+
+Summary:
+
+Allow the director to jump non-linearly when rehearsal goes off plan.
+
+Acceptance criteria:
+
+- Execution Mode has a compact block list summary.
+- User can jump to any block in one tap from the summary.
+- Status for each block is visible in the summary.
+- Summary is mobile-friendly and does not become a planning editor.
+
+## Phase 3 — Planning and communication polish
+
+Purpose: make the rehearsal loop actually useful for real rehearsal preparation and chorus communication.
+
+### Issue 13 — Add time budget warning
 
 Summary:
 
@@ -235,7 +304,7 @@ Acceptance criteria:
 - Lower-priority `should`/`could` blocks are visually identifiable as possible cuts.
 - Logic has unit tests.
 
-### Issue 12 — Generate rehearsal plan Slack copy
+### Issue 14 — Generate rehearsal plan Slack copy
 
 Summary:
 
@@ -246,91 +315,32 @@ Acceptance criteria:
 - Planning Mode can generate plan copy.
 - Message includes rehearsal date, songs being worked, songs to review, homework, what to listen for, and links/docs if present.
 - Director-only notes are excluded.
-- User can edit generated copy before copying or saving.
-- Generated/edited copy is stored as a `plan` rehearsal message.
+- User can copy the generated message.
+- Editing and saved message history can be added later if needed.
 - Unit tests cover message generation.
 
-## Phase 3 — Execution Mode
-
-Purpose: run rehearsal from an iPhone without friction.
-
-Stop after this phase and test with a real or simulated rehearsal before continuing.
-
-### Issue 13 — Build mobile-first Execution Mode
+### Issue 15 — Generate after-rehearsal Slack recap copy
 
 Summary:
 
-Create `/rehearsals/[id]/run`, focused on the current rehearsal block and minimal actions.
+Generate a copy-paste singer-facing recap message from Review Mode.
 
 Acceptance criteria:
 
-- Current block is visible without scrolling on iPhone-sized viewport.
-- Current block shows title, song/warmup, planned time, goal, director notes, relevant work areas, and next block preview.
-- Done/Partial/Skip are one-tap actions.
-- Add note is two taps or fewer.
-- Moving to next block is one tap.
-- UI is fast and uncluttered.
+- Review Mode can generate recap copy.
+- Message includes rehearsal date, songs/sections covered, key musical points, things improved, things to remember, and items singers should continue working.
+- Director-only notes are excluded unless intentionally included.
+- User can copy the generated message.
+- Editing and saved message history can be added later if needed.
+- Unit tests cover recap generation.
 
-### Issue 14 — Add optimistic execution status updates
+## Phase 4 — Review depth and carry-forward
 
-Summary:
+Purpose: make the app remember what matters and feed naturally into the next planning cycle.
 
-Make Done/Partial/Skip update immediately in the UI and sync to Supabase in the background.
+Create Phase 4 issues only after the first product checkpoint has been tested.
 
-Acceptance criteria:
-
-- Done/Partial/Skip update visually immediately.
-- Failed sync is surfaced clearly and recoverably.
-- No spinner blocks live rehearsal flow after initial load.
-- Execution status persists after refresh.
-- Tests cover status update behavior where feasible.
-
-### Issue 15 — Add fast rehearsal note capture
-
-Summary:
-
-Allow quick notes during Execution Mode.
-
-Acceptance criteria:
-
-- User can add a note from current block quickly.
-- Note is linked to rehearsal, block, and song when available.
-- Notes default to director-only.
-- Notes save without disrupting the execution flow.
-- Browser-native speech-to-text can be used if available through the normal input experience; no custom voice recording feature.
-
-### Issue 16 — Add block summary/jump view
-
-Summary:
-
-Allow the director to jump non-linearly when rehearsal goes off plan.
-
-Acceptance criteria:
-
-- Execution Mode has a compact block list summary.
-- User can jump to any block in one tap from the summary.
-- Status for each block is visible in the summary.
-- Summary is mobile-friendly and does not become a planning editor.
-
-## Phase 4 — Review Mode
-
-Purpose: close the loop, update song history, create carry-forward context, and generate the after-rehearsal recap.
-
-### Issue 17 — Build Review Mode summary
-
-Summary:
-
-Create `/rehearsals/[id]/review` showing the original plan, execution statuses, and captured notes.
-
-Acceptance criteria:
-
-- Review view shows all blocks in order.
-- Review view shows done/partial/skipped/planned status.
-- Review view shows notes captured during rehearsal.
-- Review view supports edits to execution statuses.
-- Review view is usable later, not only immediately after rehearsal.
-
-### Issue 18 — Add bulk song touch date update
+### Candidate Issue — Bulk song touch date update
 
 Summary:
 
@@ -342,11 +352,13 @@ Acceptance criteria:
 - User can set/confirm touch type per relevant block or song.
 - User can bulk update last rehearsed and last rep reviewed dates.
 - `full_work` updates `last_rehearsed_at`.
+- `sectional` updates `last_rehearsed_at`.
 - `rep_review` updates `last_rep_reviewed_at`.
-- `sectional` behavior is explicit and documented.
+- `homework` does not automatically update either date.
+- `skipped` does not update either date.
 - Logic has tests.
 
-### Issue 19 — Promote notes into work areas and carry-forward items
+### Candidate Issue — Promote notes into work areas and carry-forward items
 
 Summary:
 
@@ -360,22 +372,7 @@ Acceptance criteria:
 - User can close completed work areas during review.
 - Carry-forward items surface in the next planning view.
 
-### Issue 20 — Generate after-rehearsal Slack recap copy
-
-Summary:
-
-Generate a copy-paste singer-facing recap message from Review Mode.
-
-Acceptance criteria:
-
-- Review Mode can generate recap copy.
-- Message includes rehearsal date, songs/sections covered, key musical points, things improved, things to remember, and items singers should continue working.
-- Director-only notes are excluded unless intentionally included.
-- User can edit generated copy before copying or saving.
-- Generated/edited copy is stored as a `recap` rehearsal message.
-- Unit tests cover recap generation.
-
-### Issue 21 — Start next plan from review context
+### Candidate Issue — Start next plan from review context
 
 Summary:
 
@@ -389,139 +386,53 @@ Acceptance criteria:
 - Skipped or partial blocks can be used as next-plan candidates.
 - No automatic plan creation happens without user action.
 
-## Phase 5 — Lightweight repertoire health and look-back
+## Phase 5 — Candidate lightweight repertoire health and look-back
 
 Purpose: add simple visual/history views once the core cycle has data.
 
-### Issue 22 — Add song history view
+Candidate work:
 
-Summary:
+- Song history view.
+- Stale rep indicators.
+- Lightweight repertoire health view.
 
-Show a song's rehearsal history from rehearsal blocks and notes.
+Constraints:
 
-Acceptance criteria:
+- Keep this lightweight.
+- Do not build a full analytics/reporting dashboard.
+- Use the rehearsal history already captured by the core loop.
 
-- Song detail shows past rehearsal touches.
-- History distinguishes full work, rep review, sectional, homework, and skipped/planned work where available.
-- History shows notes and linked work items.
-- History is useful without becoming a full analytics suite.
-
-### Issue 23 — Add stale rep indicators
-
-Summary:
-
-Surface songs that may need attention based on last rehearsed and last rep reviewed dates.
-
-Acceptance criteria:
-
-- Planning Mode shows stale indicators.
-- Thresholds are configurable or easy to adjust.
-- Indicators distinguish last rehearsed from last rep reviewed.
-- No notification system is built.
-
-### Issue 24 — Add lightweight repertoire health view
-
-Summary:
-
-Create a simple look-back view showing where rehearsal attention has gone.
-
-Acceptance criteria:
-
-- View shows songs worked/reviewed over recent rehearsals.
-- View shows basic planned minutes by song where available.
-- View shows open work area counts by song.
-- View surfaces songs with repeated carry-forward notes.
-- View stays lightweight; no full analytics suite.
-
-## Phase 6 — Repertoire lifecycle helpers
+## Phase 6 — Candidate repertoire lifecycle helpers
 
 Purpose: support new-song introduction and shelving/retirement without heavy project management.
 
-### Issue 25 — Add new-song introduction planning fields and views
+Candidate work:
 
-Summary:
+- New-song introduction planning fields and views.
+- Shelf/retire workflow.
 
-Use existing song status, planned introduction date, rehearsal blocks, section labels, and work areas to support the Harmony Road new-song process.
+Constraints:
 
-Acceptance criteria:
+- Use existing song status, planned introduction date, rehearsal blocks, section labels, and work areas first.
+- Do not add a heavyweight project-management workflow.
+- Do not add a dedicated introduction-plan table until real use proves it is needed.
 
-- Song detail can show planned introduction date and status.
-- Planning Mode surfaces upcoming planned introductions.
-- User can plan Rehearsal 0 intro, sectional/four-part learning, full-group off-paper work, and recording requirement as normal rehearsal blocks.
-- App does not add a heavyweight project-management workflow.
+## Phase 7 — Candidate reliability and deployment polish
 
-### Issue 26 — Add shelf/retire workflow
+Candidate work:
 
-Summary:
+- App-like mobile install metadata.
+- Basic active-rehearsal caching.
+- Playwright smoke tests for the core cycle.
 
-Allow songs to move out of active use while preserving history.
+Constraints:
 
-Acceptance criteria:
-
-- User can mark a song shelf or retired.
-- Shelved/retired songs are hidden from default active planning views but accessible in the song library.
-- History remains preserved.
-- Retired songs can be revived by changing status.
-
-## Phase 7 — Polish, reliability, and deployment hygiene
-
-Purpose: harden the app after the core loop is usable.
-
-### Issue 27 — Add app-like mobile install metadata
-
-Summary:
-
-Make the app behave well when added to iPhone Home Screen.
-
-Acceptance criteria:
-
-- Web app manifest exists.
-- App icons/placeholders exist.
-- Mobile viewport behavior is correct.
-- README documents the add-to-home-screen path.
-
-### Issue 28 — Add basic active-rehearsal caching
-
-Summary:
-
-Improve rehearsal reliability in weak signal environments.
-
-Acceptance criteria:
-
-- Active rehearsal loads and remains usable after initial load if network weakens.
-- Previously loaded plan can still be viewed.
-- Failed writes are recoverable.
-- No complex offline-first architecture unless explicitly approved.
-
-### Issue 29 — Add Playwright smoke tests for the core cycle
-
-Summary:
-
-Add browser-level tests for the thin-slice rehearsal cycle.
-
-Acceptance criteria:
-
-- Test covers create rehearsal, add blocks, run mode, review mode, and message generation.
-- Mobile viewport is included for Execution Mode.
-- Tests are documented and runnable locally.
-
-## Not yet planned
-
-Do not create issues for these without an explicit product-direction decision:
-
-- singer accounts
-- attendance tracking
-- Slack API integration
-- native mobile app
-- audio upload/storage
-- recording review workflow
-- full analytics/reporting dashboard
-- AI planning or AI summary features
-- section leader collaboration
+- Do not build complex offline-first architecture without explicit approval.
+- Keep reliability work focused on making live rehearsal use safer.
 
 ## First issue batch recommendation
 
-Create only the first 8-12 issues initially.
+Create only the first 4 issues initially.
 
 Recommended first batch:
 
@@ -529,13 +440,12 @@ Recommended first batch:
 2. Add Supabase configuration and username/password auth shell.
 3. Add initial Supabase schema and RLS migrations.
 4. Add seed data.
-5. Build song library list and song detail view.
-6. Build song work areas.
-7. Build flexible tag management.
-8. Build warmup library.
-9. Create rehearsals and planning workspace.
-10. Add ordered rehearsal blocks.
-11. Add time budget warning.
-12. Generate rehearsal plan Slack copy.
 
-After those are working, create Execution Mode issues and test the live rehearsal flow before continuing.
+After those are working, create the next small batch:
+
+5. Build song library list and song detail view.
+6. Build song work areas with basic tags.
+7. Build warmup library with basic tags.
+8. Create rehearsals and ordered rehearsal blocks.
+
+Do not create Phase 2 issues until the first two batches are reviewed.
