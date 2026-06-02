@@ -171,8 +171,21 @@ Then open:
 http://localhost:3000
 ```
 
-No environment variables are required for the initial scaffold. Supabase
-configuration will be added in a later issue.
+Create a local environment file for Supabase-backed auth:
+
+```bash
+cp .env.example .env.local
+```
+
+Then set:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+```
+
+Use the Supabase project URL and publishable key. Do not put Supabase secret or
+service-role keys in browser-exposed environment variables.
 
 For a background dev server that can be restarted by scripts:
 
@@ -206,6 +219,16 @@ npm run test:e2e
 
 The end-to-end test script uses Playwright and starts the built Next.js app
 automatically on `http://127.0.0.1:3000`.
+
+## Auth assumptions
+
+Rehearsal Notebook is private and single-user in v1. Authentication uses
+Supabase email/password sign-in with manually provisioned users.
+
+The app does not provide public signup, magic-link login, OTP login, email-link
+login, or Google OAuth. Profile and allowed-user enforcement will be completed
+when the Supabase schema and `profiles` table are added in later foundation
+work.
 
 ## Guardrails
 

@@ -13,22 +13,35 @@ test("home page presents the scaffold shell", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "Login" })).toHaveAttribute(
     "href",
-    "/login",
+    "/login?next=/planning",
   );
 });
 
-test("login route stays a placeholder for later auth work", async ({
-  page,
-}) => {
+test("login route presents email and password sign-in", async ({ page }) => {
   await page.goto("/login");
 
   await expect(
     page.getByRole("heading", { name: "Private access" }),
   ).toBeVisible();
-  await expect(page.getByText("Login placeholder")).toBeVisible();
+  await expect(page.getByLabel("Email")).toBeVisible();
+  await expect(page.getByLabel("Password")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sign in" })).toBeVisible();
+  await expect(page.getByText("Sign up")).toHaveCount(0);
+  await expect(page.getByText("magic link")).toHaveCount(0);
+  await expect(page.getByText("OTP")).toHaveCount(0);
+  await expect(page.getByText("Google")).toHaveCount(0);
+});
+
+test("protected route handles missing Supabase configuration", async ({
+  page,
+}) => {
+  await page.goto("/planning");
+
   await expect(
-    page.getByText(
-      "Username and password authentication will be added with Supabase in a later issue.",
-    ),
+    page.getByRole("heading", { name: "Supabase configuration needed" }),
   ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Go to login" })).toHaveAttribute(
+    "href",
+    "/login",
+  );
 });

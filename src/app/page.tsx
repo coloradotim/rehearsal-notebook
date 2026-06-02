@@ -29,7 +29,7 @@ export default function Home() {
         </div>
         <Link
           className="inline-flex min-h-11 items-center justify-center rounded-md bg-[color:var(--accent)] px-5 text-sm font-semibold text-white transition hover:bg-[color:var(--accent-strong)] focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)] focus:ring-offset-2"
-          href="/login"
+          href="/login?next=/planning"
         >
           Login
         </Link>
