@@ -153,13 +153,15 @@ See `AGENTS.md` for project-specific agent and Codex guidance.
 
 ## Local setup
 
-Local setup instructions will be added once the Next.js app scaffold exists.
-
-Expected future flow:
+Install dependencies:
 
 ```bash
 npm install
-cp .env.example .env.local
+```
+
+Start the local development server:
+
+```bash
 npm run dev
 ```
 
@@ -169,6 +171,9 @@ Then open:
 http://localhost:3000
 ```
 
+No environment variables are required for the initial scaffold. Supabase
+configuration will be added in a later issue.
+
 ## Checks
 
 The intended check entry point is:
@@ -177,11 +182,12 @@ The intended check entry point is:
 scripts/check.sh
 ```
 
-Until that exists, implementation PRs should run the available equivalents and document them in the PR:
+It runs:
 
 ```bash
+npm run format:check
 npm run lint
-npm run test:run
+npm run typecheck
 npm run build
 ```
 
