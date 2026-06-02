@@ -174,6 +174,18 @@ http://localhost:3000
 No environment variables are required for the initial scaffold. Supabase
 configuration will be added in a later issue.
 
+For a background dev server that can be restarted by scripts:
+
+```bash
+scripts/dev.sh start
+scripts/dev.sh status
+scripts/dev.sh restart
+scripts/dev.sh stop
+```
+
+The script uses `http://127.0.0.1:3000` by default. Override with `DEV_HOST`
+or `DEV_PORT` when needed.
+
 ## Checks
 
 The intended check entry point is:

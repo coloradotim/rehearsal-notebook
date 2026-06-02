@@ -1,6 +1,9 @@
 # dependencies
 /node_modules
 
+# local dev server state
+/.dev
+
 # next.js
 /.next
 /out
