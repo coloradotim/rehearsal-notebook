@@ -30,6 +30,8 @@ Later phases are candidate roadmap until reviewed again.
 
 Do not create all issues in this document at once. Use this document to sequence work, not to generate a giant backlog.
 
+Roadmap issue numbers are provisional until actual GitHub issues are created.
+
 ## Product anti-goals
 
 Do not create issues for these unless Tim explicitly changes product direction:
@@ -65,6 +67,21 @@ Create rehearsal
 
 If that loop is annoying, fix it before building more.
 
+## Cycle handoff model
+
+Borrow the useful lesson from My Weekly List: review should guide the next cycle without creating a heavy close/finalize ceremony.
+
+For Rehearsal Notebook:
+
+- Review Mode should make it easy to carry context into the next Planning Mode.
+- The app should not require a formal close-out ritual before the next rehearsal can be planned.
+- An unreviewed prior rehearsal should be visible and easy to return to, but it should not block creating or editing the next rehearsal.
+- Review should capture what happened, what matters, and what should carry forward.
+- Planning should surface carry-forward notes, pinned work areas, skipped/partial blocks, and review scratchpad thoughts when useful.
+- The root/default app state should favor the most useful next action: review an unreviewed recent rehearsal when appropriate, otherwise plan or run the next relevant rehearsal.
+
+Avoid product language like `finalize`, `close`, or `lock` unless a future workflow truly requires it.
+
 ## Touch type semantics
 
 The app must distinguish how a song was touched in rehearsal.
@@ -81,6 +98,19 @@ A sectional is real work, just not full-ensemble work. It should not update `las
 
 These defaults can be overridden manually in Review Mode if needed, but Codex should not invent different behavior.
 
+## Recap selection behavior
+
+The after-rehearsal recap is director-controlled.
+
+Initial behavior should prefer:
+
+- completed and partial blocks as recap candidates
+- skipped blocks excluded by default
+- director-only notes excluded by default
+- notes included only when marked or selected for singer-facing recap
+
+The director should be able to edit the copied text before posting to Slack.
+
 ## First product checkpoint
 
 After the app can create a rehearsal, add blocks, run Execution Mode, capture notes, and show a Review summary, stop and test the workflow before building more planning polish.
@@ -88,6 +118,18 @@ After the app can create a rehearsal, add blocks, run Execution Mode, capture no
 The test is not whether the app is complete. The test is whether the core rehearsal loop feels worth continuing.
 
 This checkpoint should happen before creating Phase 4 issues.
+
+## Open seed-data item
+
+Tim will provide seed data when the implementation is ready for it.
+
+Seed data should eventually include:
+
+- representative Harmony Road songs
+- initial flexible tags
+- a handful of warmups with purposes and approximate durations
+
+Do not block the first scaffold/auth/schema work on perfect seed data.
 
 ## Phase 0 — Project foundation
 
@@ -139,6 +181,7 @@ Acceptance criteria:
 - Policies allow authenticated users to manage their own rows.
 - Join-table access is constrained through owned parent records.
 - Migration docs are added or referenced.
+- The schema is provisional; do not over-engineer or create rigid state machines.
 
 ### Issue 4 — Seed starter data for local development
 
@@ -149,9 +192,9 @@ Add local seed data for initial songs, tags, and a few warmups so the app is use
 Acceptance criteria:
 
 - Seed script or SQL exists.
-- Seed data includes representative Harmony Road songs.
+- Seed data includes representative Harmony Road songs supplied by Tim.
 - Seed data includes initial flexible tags.
-- Seed data includes a handful of warmups with purposes and durations.
+- Seed data includes a handful of warmups with purposes and durations supplied by Tim or simple placeholders if Tim approves.
 - Seed data is safe for local/dev use and documented.
 
 ## Phase 1 — Minimum rehearsal notebook
@@ -271,6 +314,7 @@ Acceptance criteria:
 - Review view shows notes captured during rehearsal.
 - Review view supports edits to execution statuses.
 - Review view is usable later, not only immediately after rehearsal.
+- Review does not force a close/finalize ceremony before the next rehearsal can be planned.
 
 ### Issue 12 — Add block summary/jump view
 
@@ -329,6 +373,8 @@ Acceptance criteria:
 
 - Review Mode can generate recap copy.
 - Message includes rehearsal date, songs/sections covered, key musical points, things improved, things to remember, and items singers should continue working.
+- Completed and partial blocks are recap candidates by default.
+- Skipped blocks are excluded by default.
 - Director-only notes are excluded unless intentionally included.
 - User can copy the generated message.
 - Editing and saved message history can be added later if needed.
@@ -385,6 +431,7 @@ Acceptance criteria:
 - Pinned work areas appear in Planning Mode.
 - Skipped or partial blocks can be used as next-plan candidates.
 - No automatic plan creation happens without user action.
+- Review context helps the next plan but does not block next-plan creation if review is incomplete.
 
 ## Phase 5 — Candidate lightweight repertoire health and look-back
 
