@@ -211,19 +211,55 @@ This matters because bringing a new song into the repertoire affects rehearsal p
 
 Harmony Road has a defined process for introducing new songs that lasts several rehearsals.
 
-The exact process should be documented before implementation, but the product strategy should already make room for it.
+The app should support this as a flexible staged process rather than a rigid wizard. The goal is to help the director plan the sequence, prepare singer homework, and see how new-song learning affects available rehearsal time across multiple rehearsal cycles.
+
+A typical new-song introduction process is:
+
+### Rehearsal 0 — Introduce the song
+
+The chorus hears the song in rehearsal and discusses the overall approach.
+
+This is not yet detailed note-learning work. The purpose is to orient the chorus to the song, why it is being added, the general style, and the intended musical/performance direction.
+
+### Rehearsals 1-2 or 1-3 — Sectional learning and four-part assembly
+
+For each rehearsal in this stage, the chorus spends about 10 minutes in sectionals on a portion of the song, usually the first half or first third depending on length and complexity.
+
+After sectionals, the group spends about 10 minutes working that same portion in four parts.
+
+This pattern repeats once or twice depending on song length and complexity.
+
+The app should support planning these blocks as paired sectional and four-part work for a defined section of the song.
+
+### Rehearsal 3 or 4 — Full-group, end-to-end, off-paper work
+
+Once the staged learning work is far enough along, the chorus works the song as a full group end-to-end off paper.
+
+At this point, the director assigns a recording requirement due before the next rehearsal.
+
+The recording requirement is a milestone in the new-song introduction process, but recordings remain occasional and should not become the center of the product.
+
+### After introduction — Into repertoire
+
+After the full-group/off-paper stage and recording requirement, the song is considered part of the repertoire.
+
+From there, the song moves into normal polishing, performance work, and rep review as needed.
+
+### Product implications
 
 The app should eventually support:
 
 - selecting a song for future introduction
 - setting a target introduction date
-- tracking the song through a multi-rehearsal introduction process
+- tracking the song through Rehearsal 0, sectional/four-part learning stages, full-group off-paper work, and recording requirement
+- adapting the number of learning rehearsals based on song length and complexity
 - planning homework and rehearsal blocks for each stage
-- seeing how a new-song plan affects available rehearsal time
+- identifying the portion of the song being worked in a given stage
+- seeing how the introduction plan affects available rehearsal time
 - carrying introduction-stage work forward if a rehearsal does not get through everything
 - moving the song into the normal active repertoire once the introduction process is complete
 
-This should not become heavy project management. It should help the director see the future rehearsal load created by introducing new music.
+This should not become heavy project management. It should help the director see the future rehearsal load created by introducing new music and avoid letting new-song learning crowd out necessary rep review and polishing.
 
 ## Shelving and retiring songs
 
