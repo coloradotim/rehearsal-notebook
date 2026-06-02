@@ -1,6 +1,24 @@
 import Link from "next/link";
+import { LoginForm } from "./login-form";
 
-export default function LoginPage() {
+type LoginPageProps = {
+  searchParams: Promise<{
+    next?: string;
+  }>;
+};
+
+function safeNextPath(next: string | undefined) {
+  if (!next || !next.startsWith("/") || next.startsWith("//")) {
+    return "/planning";
+  }
+
+  return next;
+}
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const { next } = await searchParams;
+  const nextPath = safeNextPath(next);
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-5 py-10">
       <Link
@@ -16,9 +34,10 @@ export default function LoginPage() {
         </p>
         <h1 className="mt-3 text-3xl font-semibold">Private access</h1>
         <p className="mt-3 leading-7 text-[color:var(--muted)]">
-          Username and password authentication will be added with Supabase in a
-          later issue.
+          Sign in with the manually provisioned email and password for this
+          private rehearsal notebook.
         </p>
+        <LoginForm nextPath={nextPath} />
       </section>
     </main>
   );
