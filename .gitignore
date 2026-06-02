@@ -5,6 +5,10 @@
 /.next
 /out
 
+# test output
+/playwright-report
+/test-results
+
 # production
 /build
 

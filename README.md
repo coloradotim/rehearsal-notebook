@@ -189,7 +189,11 @@ npm run format:check
 npm run lint
 npm run typecheck
 npm run build
+npm run test:e2e
 ```
+
+The end-to-end test script uses Playwright and starts the built Next.js app
+automatically on `http://127.0.0.1:3000`.
 
 ## Guardrails
 
