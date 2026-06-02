@@ -4,17 +4,22 @@
 
 Rehearsal Notebook is a private, single-user rehearsal continuity tool for Harmony Road, a small mixed a cappella/barbershop chorus.
 
+Core promise:
+
+> Plan, run, and review rehearsals while keeping the full repertoire healthy.
+
 The app helps Tim:
 
 1. Track repertoire history across rehearsals.
 2. Track current work areas for each song.
 3. Maintain a warmup library tied to musical purposes.
-4. Build realistic rehearsal plans from repertoire state, work areas, warmups, and available time.
+4. Build realistic rehearsal plans from repertoire state, work areas, warmups, available time, and planned repertoire changes.
 5. Communicate rehearsal plans and homework to the chorus through copy-paste Slack output.
 6. Run rehearsal from a phone with only the current relevant context visible.
-7. Review what happened after rehearsal and carry useful work into the next cycle.
+7. Review what happened after rehearsal, generate a chorus-facing recap, and carry useful work into the next cycle.
+8. Keep the full repertoire healthy through lightweight history, stale-rep signals, and look-back views.
 
-The product should feel practical, calm, and director-friendly. It should preserve the thread between rehearsals without becoming a generic task manager, chorus-management system, singer portal, or AI music director.
+The product should feel practical, calm, and director-friendly. It should preserve the musical thread between rehearsals without becoming a generic task manager, chorus-management system, singer portal, AI music director, recording platform, or analytics suite.
 
 ## Required product references
 
@@ -22,34 +27,59 @@ Before making product, workflow, data-model, UI, auth, or deployment changes, re
 
 1. `AGENTS.md`
 2. `README.md`
-3. The GitHub issue being worked
-4. Any referenced docs or prior issue comments
+3. `docs/product-strategy.md`
+4. `docs/architecture-and-data-model.md`
+5. `docs/roadmap-and-issues.md`
+6. The GitHub issue being worked
+7. Any referenced docs or prior issue comments
 
-Once product strategy, architecture, and roadmap docs exist, those docs become required references as well. Do not invent product behavior that conflicts with the agreed docs. If the issue and product docs conflict, stop and ask for clarification.
+Do not invent product behavior that conflicts with the agreed docs. If an issue and product doc conflict, stop and ask for clarification.
 
 ## Core product rules
 
 - Harmony Road rehearses every other Monday for roughly 2-2.5 hours.
 - Rehearsal time is limited, so singer preparation outside rehearsal matters.
-- The app is organized around three modes: Planning, Execution, and Review.
+- The app is organized around three primary modes: Planning, Execution, and Review.
 - Planning Mode builds the next rehearsal plan.
 - Execution Mode runs the current rehearsal on an iPhone.
 - Review Mode closes the loop after rehearsal, often hours or days later.
+- Review Mode should also produce a copy-paste chorus recap message for Slack.
+- The app should support the cycle: Planning Mode -> Execution Mode -> Review Mode -> chorus recap -> next Planning Mode.
 - Execution Mode is the make-or-break feature.
 - Rep review is central: distinguish substantive rehearsal work from brief maintenance review.
 - Current song work areas are central: they answer what the song currently needs.
 - Tags/taxonomy must be flexible and user-managed, not hard-coded permanently.
 - Warmups should be selected by musical purpose, not just by name.
-- Slack output is copy-paste only in v1. Do not add Slack API integration unless explicitly approved.
-- Recordings happen occasionally and are not central to v1.
+- Slack output is copy-paste only. Do not add Slack API integration unless explicitly approved.
+- Recording requirements happen occasionally. They are due before the next rehearsal when called, and may also be called at other times. They are not central to v1.
+- Do not build app-managed audio storage. If a lightweight recording reference is needed later, prefer external links attached to notes or blocks.
 - AI is deferred until the rehearsal continuity system has real structured history.
+
+## Product anti-goals
+
+Do not add these unless Tim explicitly changes product direction:
+
+- singer accounts
+- attendance tracking
+- Slack API integration or auto-posting
+- native mobile app
+- recording review workflow
+- app-managed audio storage
+- full chorus-management system
+- heavyweight project management
+- full analytics suite
+- complex collaboration
+- section leader portals
+- structured individual singer tracking
+
+Lightweight look-back is allowed. Heavy analytics is not.
 
 ## Product shape
 
 The app has exactly three primary modes:
 
 ```text
-Planning Mode -> Execution Mode -> Review Mode -> next Planning Mode
+Planning Mode -> Execution Mode -> Review Mode -> chorus recap -> next Planning Mode
 ```
 
 ### Planning Mode
@@ -63,12 +93,14 @@ Planning Mode should help Tim answer:
 - What warmups support this rehearsal's goals?
 - Is the plan realistic for the available time?
 - What homework should singers do before rehearsal?
+- Are any new songs planned for introduction?
+- Are any songs moving toward shelf or retirement?
 
 Planning Mode should include:
 
 - next rehearsal date
 - planned rehearsal minutes
-- next rehearsal scratch pad
+- planning scratchpad
 - song/repertoire context
 - last rehearsed and last rep reviewed dates
 - open work areas
@@ -77,6 +109,7 @@ Planning Mode should include:
 - must/should/could priorities
 - time-budget warning
 - singer-facing Slack message copy output
+- carry-forward context from Review Mode
 
 ### Execution Mode
 
@@ -114,7 +147,10 @@ Review Mode should help Tim:
 - promote notes into song work areas
 - close completed work areas
 - carry unfinished work forward
-- add thoughts to the next rehearsal scratch pad
+- add thoughts to the next rehearsal scratchpad
+- generate a chorus-facing recap message
+
+Review Mode should guide the next planning cycle without requiring a heavy close/finalize ceremony. An unreviewed rehearsal should be visible and easy to return to, but it should not block planning the next rehearsal.
 
 ## Repertoire and rep review rules
 
@@ -130,6 +166,36 @@ last_rep_reviewed_at  = date of brief maintenance review/run-through
 These are separate facts and should be updated separately, usually in Review Mode.
 
 Do not flatten all song touches into one generic date. Rep review history is one of the main reasons this app exists.
+
+## Touch type semantics
+
+Initial touch-type behavior:
+
+- `full_work`: substantive rehearsal work; updates `songs.last_rehearsed_at`.
+- `sectional`: substantive rehearsal work in sectionals; updates `songs.last_rehearsed_at`.
+- `rep_review`: brief maintenance review/run-through; updates `songs.last_rep_reviewed_at`.
+- `homework`: assigned or discussed but not rehearsed; does not automatically update either date.
+- `skipped`: planned but not done; does not update either date.
+
+A sectional is real work, just not full-ensemble work. It should not update `last_rep_reviewed_at`.
+
+## Repertoire lifecycle
+
+Songs may move through a flexible lifecycle such as:
+
+- candidate or under consideration
+- planned introduction
+- learning
+- active work
+- performance work
+- keep warm
+- performance-ready
+- shelf
+- retired
+
+The exact lifecycle labels may change as the app is used. Avoid hard database enums and rigid workflows.
+
+New-song introduction should be supported later as a staged process, not a heavyweight project-management workflow. Use existing song status, planned introduction date, rehearsal blocks, section labels, work areas, and notes first. Do not add a dedicated introduction-plan table unless real use proves it is needed.
 
 ## Work areas and taxonomy
 
@@ -189,6 +255,22 @@ Warmups should include:
 
 Planning Mode should make it easy to find warmups that support the songs and work areas in the plan.
 
+## Singer communication
+
+The app should generate two kinds of copy-paste Slack messages:
+
+1. A rehearsal plan message from Planning Mode.
+2. An after-rehearsal recap message from Review Mode.
+
+Director-only notes must not appear in singer-facing output unless the director intentionally includes them.
+
+The after-rehearsal recap is director-controlled:
+
+- completed and partial blocks are recap candidates by default
+- skipped blocks are excluded by default
+- director-only notes are excluded by default
+- notes should be included only when marked or selected for singer-facing recap
+
 ## Technical stack
 
 Expected stack:
@@ -209,12 +291,19 @@ If a different stack is proposed, stop and ask before changing direction.
 
 The app is private and single-user in v1.
 
-- Use Supabase Auth email/password login unless a later product decision changes this.
-- Do not add public signup.
-- Do not add singer accounts in v1.
-- Do not commit secrets.
-- Do not use service-role keys in browser code.
-- Supabase schema and RLS changes must be captured in migrations and docs, not only in the dashboard.
+Use Supabase email/password authentication with a normal password login experience.
+
+Do not use:
+
+- magic links
+- OTP login
+- email-link login
+- public signup
+- Google OAuth unless explicitly approved later
+
+The app may use an email address as the login identifier, but the user experience should be username/password-style login, not email-link authentication.
+
+Do not commit secrets. Do not use service-role keys in browser code. Supabase schema and RLS changes must be captured in migrations and docs, not only in the dashboard.
 
 ## Mobile and rehearsal reliability
 
@@ -236,7 +325,7 @@ Use GitHub issues and PRs.
 When the user asks to `work issue #X`, treat that as instruction to implement GitHub issue `#X` using this workflow:
 
 1. Read `AGENTS.md`.
-2. Read the required product docs once they exist.
+2. Read the required product docs.
 3. Read the GitHub issue and all issue comments.
 4. Check out `main`.
 5. Pull latest `origin/main`.
@@ -284,7 +373,8 @@ For every product, UX, feature, data, or workflow change, consider downstream im
 - repertoire history
 - work areas
 - warmup selection
-- Slack output
+- Slack plan output
+- Slack recap output
 - mobile rehearsal usability
 - accessibility
 - auth and allowed-user behavior
@@ -306,11 +396,12 @@ Do not:
 - bypass failing tests or builds
 - bypass branch protection or required checks
 - force-merge blocked PRs
-- add singer accounts, attendance tracking, Slack API integration, native mobile apps, push notifications, calendar sync, AI planning, AI coaching, audio storage, or recording review workflows unless explicitly approved
+- add singer accounts, attendance tracking, Slack API integration, native mobile apps, push notifications, calendar sync, AI planning, AI coaching, app-managed audio storage, recording review workflows, heavy analytics, or heavy project management unless explicitly approved
 - change product direction without asking first
 - hard-code taxonomy in a way that prevents user-managed tags
 - flatten substantive rehearsal work and brief rep review into the same date field
 - add complex editing to Execution Mode
+- add a heavy close/finalize ceremony to Review Mode
 
 ## Autonomy expectations
 
@@ -363,5 +454,6 @@ Ask first if changing:
 - repertoire history model
 - taxonomy/tag strategy
 - Execution Mode interaction model
+- Review-to-Planning handoff model
 - platform target
 - deployment approach
