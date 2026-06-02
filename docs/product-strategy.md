@@ -4,7 +4,7 @@
 
 Rehearsal Notebook is a private rehearsal continuity tool for Harmony Road.
 
-It helps the director plan rehearsals, run rehearsals, review what happened, and carry useful musical work from one rehearsal cycle into the next.
+It helps the director plan rehearsals, run rehearsals, review what happened, look back across rehearsal history, and carry useful musical work from one rehearsal cycle into the next.
 
 The product exists because Harmony Road rehearses every other Monday for roughly 2-2.5 hours. Rehearsal time is scarce. Singer preparation between rehearsals matters, and the director needs a reliable way to preserve context from one rehearsal to the next while keeping the full repertoire healthy.
 
@@ -22,6 +22,8 @@ Rehearsal Notebook should help the director:
 - carry unfinished work forward
 - track what each song currently needs
 - keep repertoire from going stale by accident
+- understand over time where rehearsal attention is going and where the repertoire may need more care
+- plan future repertoire changes, including introducing new songs and shelving or retiring old ones
 
 A useful internal principle is:
 
@@ -37,7 +39,7 @@ The app is not designed first as a singer-facing tool. Singers benefit from clea
 
 Rehearsal Notebook is not a generic planning app. It is also not a generic chorus-management system.
 
-It is a working notebook for a director managing a recurring rehearsal cycle.
+It is a working notebook for a director managing a recurring rehearsal cycle and the longer-term health of a chorus repertoire.
 
 The app should preserve the clarity of a simple spreadsheet where songs are rows and rehearsals are columns, while adding richer context:
 
@@ -50,6 +52,8 @@ The app should preserve the clarity of a simple spreadsheet where songs are rows
 - after-rehearsal recap output
 - carry-forward items
 - reminders about stale repertoire
+- look-back views showing where rehearsal time and attention have gone
+- planned repertoire changes, including new-song introductions and songs moving to shelf/retired status
 
 The app should make rehearsal planning easier without turning rehearsal into data entry.
 
@@ -76,6 +80,8 @@ It should surface:
 - warmup library
 - carry-forward items
 - songs that may need review
+- long-term repertoire-health signals, when available
+- planned upcoming repertoire changes, when available
 - time budget for the plan
 
 Planning Mode should produce a copy-paste Slack message for the chorus with clear homework and preparation notes.
@@ -178,6 +184,92 @@ The app should make it easy to see:
 - what happened most recently
 - what the song currently needs
 - whether it is getting stale
+
+## Repertoire lifecycle
+
+Rehearsal Notebook should support the reality that repertoire changes over time.
+
+Songs may move through a lifecycle such as:
+
+- candidate or under consideration
+- planned introduction
+- learning
+- active work
+- performance work
+- keep warm
+- performance-ready
+- shelf
+- retired
+
+The exact lifecycle labels may change as the app is used, so the product should avoid hard-coding a rigid lifecycle too early. But the strategy should support the idea that songs are not all in the same state.
+
+The director should be able to tell the app that a song is planned to come in on a specific date, or that a song is being moved toward shelf or retirement.
+
+This matters because bringing a new song into the repertoire affects rehearsal planning across several rehearsals, not just one night.
+
+## New-song introduction planning
+
+Harmony Road has a defined process for introducing new songs that lasts several rehearsals.
+
+The exact process should be documented before implementation, but the product strategy should already make room for it.
+
+The app should eventually support:
+
+- selecting a song for future introduction
+- setting a target introduction date
+- tracking the song through a multi-rehearsal introduction process
+- planning homework and rehearsal blocks for each stage
+- seeing how a new-song plan affects available rehearsal time
+- carrying introduction-stage work forward if a rehearsal does not get through everything
+- moving the song into the normal active repertoire once the introduction process is complete
+
+This should not become heavy project management. It should help the director see the future rehearsal load created by introducing new music.
+
+## Shelving and retiring songs
+
+The app should also support songs leaving active use.
+
+A song may be:
+
+- temporarily shelved
+- kept warm but not performance-focused
+- retired from active repertoire
+- revived later
+
+Shelving or retiring a song should preserve history. The app should not treat old songs as deleted just because they are no longer active.
+
+This supports future look-back and better repertoire decisions.
+
+## Long-term repertoire health and look-back
+
+Rehearsal Notebook should eventually help the director understand rehearsal attention over time, not just plan the next rehearsal.
+
+The app should make it easier to see:
+
+- which songs have received the most rehearsal time
+- which songs have only been touched lightly through rep review
+- which songs have not been touched recently
+- which songs have open work areas that keep carrying forward
+- why rehearsal time has been spent on particular songs
+- whether the full repertoire is staying healthy
+- whether upcoming performances, contests, or gigs are receiving enough focused preparation
+- whether new songs are crowding out necessary rep review or performance polishing
+- whether songs should be kept warm, shelved, retired, or brought back
+
+This should start simply. The first useful version may be a song history view that shows rehearsal dates, block types, notes, and open work areas.
+
+Over time, this can become a more visual repertoire-health view, showing patterns such as:
+
+- rehearsal time by song
+- rep review frequency by song
+- open work areas by song
+- stale songs
+- songs with repeated carry-forward notes
+- planned introduction timelines
+- shelf/retirement candidates
+- songs tied to upcoming performance context
+
+The goal is not analytics for its own sake. The goal is to help the director make better rehearsal-planning decisions and keep the entire repertoire from becoming lopsided, stale, or accidentally neglected.
 
 ## Song work areas
 
@@ -292,6 +384,8 @@ v1 is not:
 - a recording review workflow
 - a general-purpose task manager
 - a full chorus-management system
+- a full analytics suite
+- a heavyweight long-term project-management system
 
 These may be considered later only if they serve the core rehearsal-continuity workflow.
 
@@ -306,6 +400,8 @@ AI may eventually help with:
 - drafting singer-facing Slack messages
 - summarizing post-rehearsal notes
 - cleaning up messy notes into clear work areas
+- identifying repertoire-health patterns from rehearsal history
+- helping plan new-song introduction timelines
 
 But the app must first work as a rehearsal continuity system without AI.
 
@@ -329,6 +425,7 @@ Specifically, it succeeds if the director can:
 - carry the right work forward
 - see what each song currently needs
 - keep repertoire from going stale by accident
+- start to see, even simply, what songs have been worked or reviewed recently
 
 The most important test is:
 
